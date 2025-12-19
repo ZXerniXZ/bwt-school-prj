@@ -9,6 +9,9 @@ HOST = "0.0.0.0"  # Ascolta su tutte le interfacce per permettere connessioni es
 PORT = 65432
 KEYWORD_GET_OUTPUT = "GET_OUTPUT"  # Parola chiave per richiedere output.json
 
+# Lock per sincronizzare l'accesso al file output.json
+file_lock = threading.Lock()
+
 def bwt(s):
     s = s + "$"
     n = len(s)
@@ -25,21 +28,22 @@ def salva_record(record):
     # Crea la cartella se non esiste
     os.makedirs(data_dir, exist_ok=True)
 
-    # Se il file esiste lo carico, altrimenti creo lista vuota
-    if os.path.exists(file_name) and os.path.isfile(file_name):
-        with open(file_name, "r") as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError:
-                data = []    
-    else:
-        data = []
+    # Acquisisci il lock per sincronizzare l'accesso al file
+    with file_lock:
+        # Se il file esiste lo carico, altrimenti creo lista vuota
+        if os.path.exists(file_name) and os.path.isfile(file_name):
+            with open(file_name, "r") as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError:
+                    data = []    
+        else:
+            data = []
 
+        data.append(record)
 
-    data.append(record)
-
-    with open(file_name, "w") as f:
-        json.dump(data, f, indent=4)
+        with open(file_name, "w") as f:
+            json.dump(data, f, indent=4)
 
 
 def handle_client(conn, addr):
@@ -58,22 +62,24 @@ def handle_client(conn, addr):
             data_dir = "/data"
             file_name = os.path.join(data_dir, "output.json")
             
-            if os.path.exists(file_name) and os.path.isfile(file_name):
-                try:
-                    with open(file_name, "r") as f:
-                        json_data = json.load(f)
-                    # Invia il JSON come stringa
-                    response_json = json.dumps(json_data, indent=4)
-                    conn.sendall(response_json.encode())
-                    print(f"Output.json inviato a {addr}")
-                except Exception as e:
-                    error_msg = f"Errore nella lettura del file: {str(e)}"
+            # Acquisisci il lock per sincronizzare la lettura del file
+            with file_lock:
+                if os.path.exists(file_name) and os.path.isfile(file_name):
+                    try:
+                        with open(file_name, "r") as f:
+                            json_data = json.load(f)
+                        # Invia il JSON come stringa
+                        response_json = json.dumps(json_data, indent=4)
+                        conn.sendall(response_json.encode())
+                        print(f"Output.json inviato a {addr}")
+                    except Exception as e:
+                        error_msg = f"Errore nella lettura del file: {str(e)}"
+                        conn.sendall(error_msg.encode())
+                        print(error_msg)
+                else:
+                    error_msg = "File output.json non trovato"
                     conn.sendall(error_msg.encode())
                     print(error_msg)
-            else:
-                error_msg = "File output.json non trovato"
-                conn.sendall(error_msg.encode())
-                print(error_msg)
         else:
             # Logica BWT normale
             start = time.perf_counter()
