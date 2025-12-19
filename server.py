@@ -1,9 +1,6 @@
 import socket
 import pickle
 import time
-import threading
-import json
-import os   
 
 HOST = "127.0.0.1"
 PORT = 65432
@@ -15,27 +12,6 @@ def bwt(s):
     rotazioni.sort()
     return "".join(r[-1] for r in rotazioni)
 
-
-def salva_record(record):
-    file_name = "output.json"
-
-    # Se il file esiste lo carico, altrimenti creo lista vuota
-    if os.path.exists(file_name):
-        with open(file_name, "r") as f:
-            try:
-                data = json.load(f)
-            except json.JSONDecodeError:
-                data = []    
-    else:
-        data = []
-
-
-    data.append(record)
-
-    with open(file_name, "w") as f:
-        json.dump(data, f, indent=4)
-
-
 def handle_client(conn, addr):
     with conn:
         data = conn.recv(4096)
@@ -44,25 +20,15 @@ def handle_client(conn, addr):
             return
 
         text = data.decode()
-        print(f"Messaggio ricevuto: {text}")
+        print(f"Messaggio ricevuto da {addr}: {text}")
 
         start = time.perf_counter()
         result = bwt(text)
         end = time.perf_counter()
 
-        data_to_save = {
-            "stringa_ricevuta": text,
-            "stringa_bwt": result,
-            "tempo_secondi": end - start
-        }
-
-        # Salvo sul JSON in modo corretto
-        salva_record(data_to_save)
-
-        # Risposta al client (mantengo solo il risultato BWT)
-        response = (result,end - start)
+        # Risposta al client: risultato BWT e tempo
+        response = (result, end - start)
         conn.sendall(pickle.dumps(response))
-
 
 print(f"Server in ascolto su {HOST}:{PORT}")
 
@@ -72,5 +38,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 
     while True:
         conn, addr = s.accept()
-        t = threading.Thread(target=handle_client, args=(conn, addr))
-        t.start()
+        handle_client(conn, addr)
