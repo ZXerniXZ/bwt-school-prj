@@ -5,7 +5,7 @@ import threading
 import json
 import os   
 
-HOST = "127.0.0.1"
+HOST = "0.0.0.0"  # Ascolta su tutte le interfacce per permettere connessioni esterne
 PORT = 65432
 
 def bwt(s):
@@ -17,10 +17,15 @@ def bwt(s):
 
 
 def salva_record(record):
-    file_name = "output.json"
+    # Cartella per i dati (mappata come volume esterno)
+    data_dir = "/data"
+    file_name = os.path.join(data_dir, "output.json")
+    
+    # Crea la cartella se non esiste
+    os.makedirs(data_dir, exist_ok=True)
 
     # Se il file esiste lo carico, altrimenti creo lista vuota
-    if os.path.exists(file_name):
+    if os.path.exists(file_name) and os.path.isfile(file_name):
         with open(file_name, "r") as f:
             try:
                 data = json.load(f)
