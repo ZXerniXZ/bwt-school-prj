@@ -9,7 +9,7 @@ HOST = "0.0.0.0"  # Ascolta su tutte le interfacce per permettere connessioni es
 PORT = 65432
 KEYWORD_GET_OUTPUT = "GET_OUTPUT"  # Parola chiave per richiedere output.json
 
-# Lock per sincronizzare l'accesso al file output.json
+
 file_lock = threading.Lock()
 
 def bwt(s):
@@ -21,14 +21,14 @@ def bwt(s):
 
 
 def salva_record(record):
-    # Cartella per i dati (mappata come volume esterno)
+   
     data_dir = "/data"
     file_name = os.path.join(data_dir, "output.json")
     
-    # Crea la cartella se non esiste
+ 
     os.makedirs(data_dir, exist_ok=True)
 
-    # Acquisisci il lock per sincronizzare l'accesso al file
+   
     with file_lock:
         # Se il file esiste lo carico, altrimenti creo lista vuota
         if os.path.exists(file_name) and os.path.isfile(file_name):
@@ -58,17 +58,16 @@ def handle_client(conn, addr):
 
         # Controlla se il messaggio contiene la parola chiave per ottenere output.json
         if KEYWORD_GET_OUTPUT in text:
-            # Endpoint per ottenere output.json
+
             data_dir = "/data"
             file_name = os.path.join(data_dir, "output.json")
             
-            # Acquisisci il lock per sincronizzare la lettura del file
+    
             with file_lock:
                 if os.path.exists(file_name) and os.path.isfile(file_name):
                     try:
                         with open(file_name, "r") as f:
                             json_data = json.load(f)
-                        # Invia il JSON come stringa
                         response_json = json.dumps(json_data, indent=4)
                         conn.sendall(response_json.encode())
                         print(f"Output.json inviato a {addr}")
