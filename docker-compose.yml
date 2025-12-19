@@ -1,0 +1,12 @@
+version: '3.3'
+
+services:
+  server:
+    build: .
+    container_name: bwt-server
+    ports:
+      - "65432:65432"  # Mappa la porta host:container
+    volumes:
+      - ./data:/data  # Cartella esterna per i dati
+    restart: unless-stopped
+
