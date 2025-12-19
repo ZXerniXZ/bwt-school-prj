@@ -7,6 +7,7 @@ import os
 
 HOST = "0.0.0.0"  # Ascolta su tutte le interfacce per permettere connessioni esterne
 PORT = 65432
+KEYWORD_GET_OUTPUT = "GET_OUTPUT"  # Parola chiave per richiedere output.json
 
 def bwt(s):
     s = s + "$"
@@ -51,22 +52,46 @@ def handle_client(conn, addr):
         text = data.decode()
         print(f"Messaggio ricevuto: {text}")
 
-        start = time.perf_counter()
-        result = bwt(text)
-        end = time.perf_counter()
+        # Controlla se il messaggio contiene la parola chiave per ottenere output.json
+        if KEYWORD_GET_OUTPUT in text:
+            # Endpoint per ottenere output.json
+            data_dir = "/data"
+            file_name = os.path.join(data_dir, "output.json")
+            
+            if os.path.exists(file_name) and os.path.isfile(file_name):
+                try:
+                    with open(file_name, "r") as f:
+                        json_data = json.load(f)
+                    # Invia il JSON come stringa
+                    response_json = json.dumps(json_data, indent=4)
+                    conn.sendall(response_json.encode())
+                    print(f"Output.json inviato a {addr}")
+                except Exception as e:
+                    error_msg = f"Errore nella lettura del file: {str(e)}"
+                    conn.sendall(error_msg.encode())
+                    print(error_msg)
+            else:
+                error_msg = "File output.json non trovato"
+                conn.sendall(error_msg.encode())
+                print(error_msg)
+        else:
+            # Logica BWT normale
+            start = time.perf_counter()
+            result = bwt(text)
+            end = time.perf_counter()
 
-        data_to_save = {
-            "stringa_ricevuta": text,
-            "stringa_bwt": result,
-            "tempo_secondi": end - start
-        }
+            data_to_save = {
+                "stringa_ricevuta": text,
+                "stringa_bwt": result,
+                "tempo_secondi": end - start
+            }
 
-        # Salvo sul JSON in modo corretto
-        salva_record(data_to_save)
+            # Salvo sul JSON in modo corretto
+            salva_record(data_to_save)
 
-        # Risposta al client (mantengo solo il risultato BWT)
-        response = (result,end - start)
-        conn.sendall(pickle.dumps(response))
+            # Risposta al client (mantengo solo il risultato BWT)
+            response = (result,end - start)
+            conn.sendall(pickle.dumps(response))
 
 
 print(f"Server in ascolto su {HOST}:{PORT}")
