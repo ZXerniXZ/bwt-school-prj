@@ -6,7 +6,6 @@ import subprocess
 import sys
 import socket
 import time
-import os
 
 def check_server():
     """Verifica se il server socket è attivo"""
@@ -52,9 +51,6 @@ def main():
         print("⚠️  Server Flask non attivo (alcuni test potrebbero fallire)")
         print("   Avvia Flask con: python3 client.py")
     
-    # Ottieni la directory degli script
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    
     # Esegui test
     tests = [
         ("Test Scalabilità", "test_scalability.py"),
@@ -74,10 +70,8 @@ def main():
         print(f"\n{test_name}...")
         print("-" * 80)
         try:
-            test_path = os.path.join(script_dir, test_file)
             result = subprocess.run(
-                [sys.executable, test_path],
-                cwd=script_dir,  # Esegui dalla directory degli script
+                [sys.executable, test_file],
                 capture_output=True,
                 text=True,
                 timeout=300
@@ -100,10 +94,8 @@ def main():
     print("=" * 80)
     
     try:
-        report_path = os.path.join(script_dir, "generate_report.py")
         result = subprocess.run(
-            [sys.executable, report_path],
-            cwd=script_dir,  # Esegui dalla directory degli script
+            [sys.executable, "generate_report.py"],
             capture_output=True,
             text=True
         )
@@ -115,37 +107,10 @@ def main():
     except Exception as e:
         print(f"❌ Errore generando report: {e}")
     
-    # Genera grafici
-    print("\n" + "=" * 80)
-    print("GENERAZIONE GRAFICI")
-    print("=" * 80)
-    
-    try:
-        graphs_path = os.path.join(script_dir, "generate_graphs.py")
-        result = subprocess.run(
-            [sys.executable, graphs_path],
-            cwd=script_dir,
-            capture_output=True,
-            text=True
-        )
-        print(result.stdout)
-        if result.returncode == 0:
-            print("\n✅ Grafici generati con successo")
-        else:
-            print("⚠️  Grafici generati con errori (verifica dipendenze: matplotlib, numpy)")
-            if result.stderr:
-                print("Errori:", result.stderr)
-    except Exception as e:
-        print(f"⚠️  Errore generando grafici: {e}")
-        print("   (Richiede matplotlib e numpy: pip install matplotlib numpy)")
-    
     print("\n" + "=" * 80)
     print("TEST COMPLETATI")
     print("=" * 80)
-    print("\nFile generati:")
-    print("  - TEST_REPORT.txt (report completo)")
-    print("  - graph_scalability.png (grafico scalabilità)")
-    print("  - graph_overhead_comparison.png (grafico overhead)")
+    print("\nConsulta TEST_REPORT.txt per i risultati completi.")
 
 if __name__ == '__main__':
     main()

@@ -116,11 +116,6 @@ def run_persistence_test():
     print("\n" + "=" * 60)
     print("FASE 4: ISTRUZIONI PER TEST MANUALE")
     print("=" * 60)
-    # Determina il percorso corretto per data/output.json
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    project_root = os.path.dirname(script_dir)
-    data_path = os.path.join(project_root, "data", "output.json")
-    
     print("""
 Per completare il test di persistenza:
 
@@ -128,7 +123,7 @@ Per completare il test di persistenza:
    sudo docker-compose down
 
 2. Verifica che il file esista sul host:
-   cat """ + data_path + """ | wc -l
+   cat ./data/output.json | wc -l
 
 3. Riavvia il container:
    sudo docker-compose up -d
@@ -136,7 +131,7 @@ Per completare il test di persistenza:
 4. Attendi che il server sia pronto (circa 5 secondi)
 
 5. Esegui di nuovo questo script per verificare che i dati siano ancora presenti
-   cd """ + script_dir + """ && python3 test_persistence.py --verify
+   python3 test_persistence.py --verify
 
 I dati dovrebbero essere ancora presenti dopo il riavvio.
 """)

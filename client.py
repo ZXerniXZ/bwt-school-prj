@@ -5,12 +5,12 @@ import json
 
 app = Flask(__name__)
 
-# Configurazione del server socket
+
 SOCKET_HOST = "127.0.0.1"
 SOCKET_PORT = 65432
 KEYWORD_GET_OUTPUT = "GET_OUTPUT"
 
-# HTML template semplice
+
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html>
@@ -108,10 +108,10 @@ def connect_to_socket(message):
             s.settimeout(10)
             s.connect((SOCKET_HOST, SOCKET_PORT))
             s.send(message.encode())
-            
-            # Riceve tutti i dati
+        
             data = b""
-            s.settimeout(3)  # Timeout per la ricezione
+            s.settimeout(3) 
+            # per la parte creare la sezione di deserializzazione è stata utilizzata in parte la ai
             try:
                 while True:
                     chunk = s.recv(4096)
@@ -178,7 +178,7 @@ def api_bwt():
         
         print(f"[API] Richiesta BWT per: '{text}'")
         
-        # Connetti al server socket e invia il testo
+        
         response = connect_to_socket(text)
         print(f"[API] Risposta dal socket: {response.get('type', 'unknown')}")
         

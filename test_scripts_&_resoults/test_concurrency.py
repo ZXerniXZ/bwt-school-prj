@@ -44,16 +44,9 @@ def run_concurrency_test():
     print("=" * 60)
     
     # Leggi il numero attuale di record nel file
-    # Prova prima /data (Docker), poi ../data (locale dalla sottocartella), poi ./data
     data_file = "/data/output.json"
     if not os.path.exists(data_file):
-        # Prova nella directory parent (se eseguito da sottocartella)
-        parent_data = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "output.json")
-        if os.path.exists(parent_data):
-            data_file = parent_data
-        else:
-            # Prova nella directory corrente
-            data_file = "./data/output.json"
+        data_file = "./data/output.json"
     
     initial_count = 0
     if os.path.exists(data_file):

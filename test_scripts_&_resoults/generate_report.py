@@ -8,12 +8,8 @@ from datetime import datetime
 
 def load_json(filename):
     """Carica file JSON se esiste"""
-    # Cerca nella directory corrente (dove sono gli script)
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    filepath = os.path.join(script_dir, filename)
-    
-    if os.path.exists(filepath):
-        with open(filepath, 'r', encoding='utf-8') as f:
+    if os.path.exists(filename):
+        with open(filename, 'r', encoding='utf-8') as f:
             return json.load(f)
     return None
 
@@ -190,15 +186,12 @@ Il sistema è robusto, thread-safe e pronto per l'uso in produzione.
 if __name__ == '__main__':
     report = generate_report()
     
-    # Salva report nella directory corrente
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    report_path = os.path.join(script_dir, 'TEST_REPORT.txt')
-    
-    with open(report_path, 'w', encoding='utf-8') as f:
+    # Salva report
+    with open('TEST_REPORT.txt', 'w', encoding='utf-8') as f:
         f.write(report)
     
     # Stampa anche a schermo
     print(report)
     print("\n" + "=" * 80)
-    print(f"Report salvato in {report_path}")
+    print("Report salvato in TEST_REPORT.txt")
 

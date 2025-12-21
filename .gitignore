@@ -2,11 +2,6 @@
 data/
 *.json
 
-# File generati dai test
-test_scripts_&_resoults/test_results_*.json
-test_scripts_&_resoults/graph_*.png
-test_scripts_&_resoults/TEST_REPORT.txt
-
 # Python
 __pycache__/
 *.py[cod]

@@ -91,10 +91,10 @@ def handle_client(conn, addr):
                 "tempo_secondi": end - start
             }
 
-            # Salvo sul JSON in modo corretto
+
             salva_record(data_to_save)
 
-            # Risposta al client (mantengo solo il risultato BWT)
+     
             response = (result,end - start)
             conn.sendall(pickle.dumps(response))
 
