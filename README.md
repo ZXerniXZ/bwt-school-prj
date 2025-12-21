@@ -10,5 +10,10 @@ Il progetto è suddiviso in tre versioni principali, ognuna delle quali introduc
 
 •  [v0.3](https://github.com/ZXerniXZ/bwt-school-prj/tree/v0.3)  - Professional Architecture: Modello a tre livelli con un **Bridge Flask (HTTP ↔ socket)**, completa containerizzazione **Docker** e gestione della persistenza tramite volumi.
 
+# altre risorse
+sono state predisposte altre due risorse fondamentali per la comprensione dell'elaborato:
 
+• **documentazione.pdf** - si trova in questo branch ed è una tesi formale che copre tutti gli aspetti della creazione del progetto 
+
+• il [sito](https://bwt-site.vercel.app/) - una presentazione interattiva e dinamica attua alla facile comprensione e all'educazione dei concetti alla base del lavoro svolto
 
