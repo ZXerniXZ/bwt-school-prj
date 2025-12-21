@@ -1,0 +1,117 @@
+[
+  {
+    "test": "Stringa con $",
+    "description": "Stringa con $ nel mezzo",
+    "input": "prezzo$100",
+    "result": {
+      "success": true,
+      "result": "o001$rz$pze",
+      "elapsed": 2.7391999537940137e-05,
+      "original": "prezzo$100"
+    }
+  },
+  {
+    "test": "Stringa con $",
+    "description": "Stringa che inizia con $",
+    "input": "$start",
+    "result": {
+      "success": true,
+      "result": "t$ta$rs",
+      "elapsed": 2.3775000954628922e-05,
+      "original": "$start"
+    }
+  },
+  {
+    "test": "Stringa con $",
+    "description": "Stringa che finisce con $",
+    "input": "end$",
+    "result": {
+      "success": true,
+      "result": "d$n$e",
+      "elapsed": 2.6100000468431972e-05,
+      "original": "end$"
+    }
+  },
+  {
+    "test": "Stringa con $",
+    "description": "Stringa con multipli $",
+    "input": "a$b$c",
+    "result": {
+      "success": true,
+      "result": "cab$$$",
+      "elapsed": 2.7803000193671323e-05,
+      "original": "a$b$c"
+    }
+  },
+  {
+    "test": "Stringa vuota",
+    "method": "socket",
+    "result": {
+      "success": false,
+      "error": "timed out"
+    }
+  },
+  {
+    "test": "Stringa vuota",
+    "method": "flask",
+    "result": {
+      "error": "Stringa vuota",
+      "success": false
+    }
+  },
+  {
+    "test": "Caratteri non ASCII",
+    "description": "Caratteri accentati",
+    "input": "caffè",
+    "result": {
+      "success": true,
+      "result": "èc$aff",
+      "elapsed": 3.17210015055025e-05,
+      "original": "caffè"
+    }
+  },
+  {
+    "test": "Caratteri non ASCII",
+    "description": "Caratteri con dieresi",
+    "input": "naïve",
+    "result": {
+      "success": true,
+      "result": "env$ïa",
+      "elapsed": 3.8705000406480394e-05,
+      "original": "naïve"
+    }
+  },
+  {
+    "test": "Caratteri non ASCII",
+    "description": "Caratteri cinesi",
+    "input": "你好",
+    "result": {
+      "success": true,
+      "result": "好$你",
+      "elapsed": 3.2612000723020174e-05,
+      "original": "你好"
+    }
+  },
+  {
+    "test": "Caratteri non ASCII",
+    "description": "Emoji",
+    "input": "🚀test🌟",
+    "result": {
+      "success": true,
+      "result": "🌟te🚀st$",
+      "elapsed": 4.0066999645205215e-05,
+      "original": "🚀test🌟"
+    }
+  },
+  {
+    "test": "Caratteri non ASCII",
+    "description": "Caratteri speciali",
+    "input": "Müller",
+    "result": {
+      "success": true,
+      "result": "r$llüeM",
+      "elapsed": 2.9075999918859452e-05,
+      "original": "Müller"
+    }
+  }
+]
